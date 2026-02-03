@@ -1,7 +1,10 @@
 package com.example.ecommerce_backend_test.utils;
 
-import com.example.ecommerce_backend_test.model.Product;
-import com.example.ecommerce_backend_test.model.WooCommerceProductDTO;
+import com.example.ecommerce_backend_test.model.*;
+import com.example.ecommerce_backend_test.model.payloads.WooCommerceCreateImageRequest;
+import com.example.ecommerce_backend_test.model.payloads.WooCommerceCreateProductRequest;
+
+import java.util.List;
 
 public class ProductMapper {
     public static Product toProduct(WooCommerceProductDTO wooProductDTO) {
@@ -25,5 +28,25 @@ public class ProductMapper {
                 product.getShortDescription(),
                 product.getRegularPrice()
         );
+    }
+
+    public static WooCommerceCreateProductRequest toWooProductRequest(Product product) {
+        List<WooCommerceCreateImageRequest> images = product
+                .getImages()
+                .stream()
+                .map(ProductMapper::toWooImageRequest)
+                .toList();
+
+        return new WooCommerceCreateProductRequest(
+                product.getName(),
+                product.getSlug(),
+                product.getDescription(),
+                product.getShortDescription(),
+                product.getRegularPrice()
+        );
+    }
+
+    public static WooCommerceCreateImageRequest toWooImageRequest(Images image) {
+        return new WooCommerceCreateImageRequest(image.getId());
     }
 }

@@ -1,8 +1,10 @@
 package com.example.ecommerce_backend_test.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class Product {
@@ -10,7 +12,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column()
     private String name;
 
     @Column
@@ -25,7 +27,16 @@ public class Product {
     private String short_description;
 
     @Column
-    private BigDecimal regular_price;
+    private String regular_price;
+
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @JsonManagedReference
+    private List<Images> images;
 
     @Column
     private Long woocommerceId;
@@ -70,12 +81,20 @@ public class Product {
         this.short_description = short_description;
     }
 
-    public BigDecimal getRegularPrice() {
+    public String getRegularPrice() {
         return regular_price;
     }
 
-    public void setRegularPrice(BigDecimal regular_price) {
+    public void setRegularPrice(String regular_price) {
         this.regular_price = regular_price;
+    }
+
+    public List<Images> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Images> images) {
+        this.images = images;
     }
 
     public Long getWoocommerceId() {
@@ -95,6 +114,7 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", short_description='" + short_description + '\'' +
                 ", regular_price=" + regular_price +
+                ", images=" + images.toString() +
                 ", woocommerceId=" + woocommerceId +
                 '}';
     }
